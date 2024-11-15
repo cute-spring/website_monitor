@@ -2,7 +2,6 @@ from flask import render_template, request, redirect, url_for, send_file
 from . import db
 from .models import Website, MonitoringRecord
 from .export import export_to_excel
-import pandas as pd
 from io import BytesIO
 
 def add_routes(app):
@@ -38,5 +37,12 @@ def add_routes(app):
     @app.route('/history/<int:website_id>')
     def history(website_id):
         website = Website.query.get_or_404(website_id)
-        records = MonitoringRecord.query.filter_by(website_id=website.id).order_by(MonitoringRecord.check_time.desc()).all()
-        return render_template('history.html', website=website, records=records)
+        records = MonitoringRecord.query.filter_by(website_id=website.id).order_by(MonitoringRecord.check_time.asc()).all()
+
+        # Prepare data for the chart
+        chart_data = {
+            "labels": [record.check_time.strftime('%Y-%m-%d %H:%M:%S') for record in records],
+            "data": [record.response_time for record in records]
+        }
+
+        return render_template('history.html', website=website, records=records, chart_data=chart_data)

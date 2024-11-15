@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
 <h2>History for {{ website.name }}</h2>
+
+<!-- Chart container -->
+<canvas id="responseTimeChart" width="800" height="400"></canvas>
+
+<!-- Table of history data -->
 <table>
     <tr>
         <th>Status</th>
@@ -16,4 +21,46 @@
     {% endfor %}
 </table>
 <a href="{{ url_for('index') }}">Back to Home</a>
+
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Prepare data for the chart
+    const labels = {{ chart_data.labels | tojson }};
+    const data = {{ chart_data.data | tojson }};
+
+    // Configure and render the chart
+    const ctx = document.getElementById('responseTimeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Response Time (ms)',
+                data: data,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Response Time (ms)'
+                    }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
