@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Monitored Websites</h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>URL</th>
+        <th>Status</th>
+        <th>Response Time (ms)</th>
+        <th>Last Checked Time</th>
+        <th>History</th>
+    </tr>
+    {% for site in websites %}
+    <tr>
+        <td>{{ site.name }}</td>
+        <td>{{ site.url }}</td>
+        <td>{{ site.status }}</td>
+        <td>{{ site.response_time }}</td>
+        <td>{{ site.last_checked.strftime('%Y-%m-%d %H:%M:%S') if site.last_checked else 'N/A' }}</td>
+        <td><a href="{{ url_for('history', website_id=site.id) }}">View History</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

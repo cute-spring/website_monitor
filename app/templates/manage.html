@@ -1,0 +1,18 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<h2>Manage Websites</h2>
+<form action="{{ url_for('manage') }}" method="POST">
+    <label for="name">Name:</label>
+    <input type="text" name="name" required>
+    <label for="url">URL:</label>
+    <input type="url" name="url" required>
+    <button type="submit">Add Website</button>
+</form>
+<h3>Current Websites</h3>
+<ul>
+    {% for site in websites %}
+    <li>{{ site.name }} - <a href="{{ site.url }}">{{ site.url }}</a> <a href="{{ url_for('delete', id=site.id) }}">Delete</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
